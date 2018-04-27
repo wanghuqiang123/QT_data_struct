@@ -24,7 +24,7 @@ namespace Wanglib
         }
         else
         {
-            m_location = NULL;
+            m_location = NULL;  //如果抛出异常的话调用exception父类  但是父类也未完成，子类再去调用父类 造成死循环。
         }
 
     }
