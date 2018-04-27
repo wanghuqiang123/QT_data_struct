@@ -1,12 +1,12 @@
 #ifndef SMARTPOINT_H
 #define SMARTPOINT_H
 
-
+#include "object.h"
 
 namespace Wanglib
 {
     template <typename T>
-    class SmartPointer
+    class SmartPointer : public Object
     {
     protected:
           T* m_pointer;
