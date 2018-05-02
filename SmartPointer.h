@@ -1,23 +1,21 @@
 #ifndef SMARTPOINT_H
 #define SMARTPOINT_H
 
-#include "object.h"
+#include "pointer.h"
 
 namespace Wanglib
 {
     template <typename T>
-    class SmartPointer : public Object
+    class SmartPointer : public Pointer<T>
     {
-    protected:
-          T* m_pointer;
     public:
-          SmartPointer(T* p = NULL)
+          SmartPointer(T* p = NULL):Pointer<T>(p)
           {
-              m_pointer = p;
+
           }
           SmartPointer(const SmartPointer<T>& obj)
           {
-              m_pointer = obj.m_pointer;
+              this->m_pointer = obj.m_pointer;
 
              const_cast<SmartPointer<T>&>(obj).m_pointer = NULL;
           }
@@ -25,34 +23,19 @@ namespace Wanglib
           {
               if(this != &obj)
               {
-                  delete m_pointer;
+                  T* p = this->m_pointer;
 
-                  m_pointer = obj.m_pointer;
+                  this->m_pointer = obj.m_pointer;
 
                  const_cast<SmartPointer<T>&>(obj).m_pointer = NULL;
 
+                  delete p;
               }
               return *this;
           }
-          T* operator->()
-          {
-                return m_pointer;
-          }
-          T& operator*()
-          {
-              return *m_pointer;
-          }
-          bool isNull()
-          {
-              return (m_pointer == NULL);
-          }
-          T* get()
-          {
-              return m_pointer;
-          }
           ~SmartPointer()
           {
-              delete   m_pointer;
+               delete this->m_pointer;
           }
     };
 }

@@ -2,7 +2,6 @@
 #define LINKLIST_H
 #include "list.h"
 #include "Exception.h"
-#include "SmartPointer.h"
 
 
 namespace Wanglib
@@ -14,27 +13,27 @@ namespace Wanglib
         struct Node:public Object
         {
             T value;
-            SmartPointer<Node> next;
+         Node* next;
         };
 
         mutable struct:public Object
         {
             char reserved[sizeof(T)];
-            SmartPointer<Node> next;
+          Node* next;
         }m_header;
 
         int m_length;
         int m_step;
-        SmartPointer<Node> m_current;
+        Node* m_current;
 
         Node* position(int i)const
         {
-           SmartPointer<Node> ret = reinterpret_cast<Node*>(&m_header);
+           Node* ret = reinterpret_cast<Node*>(&m_header);
             for(int p = 0;p<i;p++)
             {
                 ret =ret->next;
             }
-            return ret.get();
+            return ret;
         }
 
         virtual Node* create()
@@ -96,8 +95,8 @@ namespace Wanglib
 
              if(ret)
              {
-                SmartPointer<Node> current = position(i);
-                SmartPointer<Node> todel = current->next;
+                Node* current = position(i);
+                Node* todel = current->next;
                  if(m_current == todel)
                  {
                      m_current = todel->next;
@@ -105,7 +104,7 @@ namespace Wanglib
                  current->next = todel->next;
 
                  m_length--;
-               // destroy(todel.get());
+               destroy(todel);
              }
              else
              {
@@ -157,9 +156,9 @@ namespace Wanglib
             int ret = -1;
 
             int i = 0;
-            SmartPointer<Node> node = m_header.next;
+            Node* node = m_header.next;
 
-            while(node.get())
+            while(node)
             {
                 if(node->value == e)
                 {
@@ -182,16 +181,15 @@ namespace Wanglib
         }
         void clear()
         {
-           // while(m_header.next)
-            while(m_header.next.isNull())
+            while(m_header.next)
             {
-               SmartPointer<Node> todel = m_header.next;
+               Node* todel = m_header.next;
 
                 m_header.next = todel->next;
 
                 m_length--;
 
-               //destroy(todel.get());
+               destroy(todel);
             }
 
             //m_length = 0;
@@ -212,7 +210,7 @@ namespace Wanglib
 
         bool end()
         {
-            return m_current.isNull();
+            return (m_current == NULL);
 
         }
         T current()
