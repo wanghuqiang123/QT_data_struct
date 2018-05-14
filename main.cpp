@@ -1,5 +1,5 @@
 #include <iostream>
-#include "Exception.h"
+#include "circledualist.h"
 
 using namespace std;
 using namespace Wanglib;
@@ -7,18 +7,39 @@ using namespace Wanglib;
 
 int main()
 {
+    DuaCirclelist<int>d;
 
-    try
+    for(int i = 0;i<5;i++)
     {
-        THROW_EXCEPTION(ArithmeticException,"test");
-    }
-    catch(const Exception& e)    //赋值兼容性原则，父类可以给子类 ，非const可以给const
-    {
-        cout<<"catch(const Exception& e)"<<endl;
-        cout<<e.message()<<endl;
-        cout<<e.location()<<endl;
+        d.insert(0,i);
+        d.insert(0,5);
     }
 
+
+
+   cout<<"begin"<<endl;
+
+   d.move(d.length()-1);
+
+   while(d.find(5) != -1)
+   {
+       if(d.current() == 5)
+       {
+           cout<<d.current()<<endl;
+           d.remove(d.find(d.current()));
+       }
+       else
+       {
+           d.pre();
+       }
+   }
+
+    cout<<"end"<<endl;
+    for(d.move(0);!d.end();d.next())
+    {
+        cout<<d.get(i)<<endl;
+    }
     return 0;
 }
+
 

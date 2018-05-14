@@ -1,0 +1,14 @@
+#ifndef SMARTPOINT_H
+#define SMARTPOINT_H
+
+namespace wanglib 
+{
+  template <typename T>
+class name
+{
+public:
+    name() {}
+};
+}
+
+#endif // SMARTPOINT_H

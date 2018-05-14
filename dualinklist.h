@@ -1,5 +1,6 @@
-#ifndef LINKLIST_H
-#define LINKLIST_H
+#ifndef DUALINKLIST_H
+#define DUALINKLIST_H
+
 #include "list.h"
 #include "Exception.h"
 
@@ -7,19 +8,21 @@
 namespace Wanglib
 {
     template <typename T>
-    class LinkList : public List<T>
+    class DuaLinkList : public List<T>
     {
     protected:
         struct Node:public Object
         {
             T value;
-         Node* next;
+            Node* next;
+            Node* pre;
         };
 
-        mutable struct:public Object
+        mutable struct:public Object  //mutable 指的是被定义的变量永远处于可变的状态，即使在const的函数中
         {
             char reserved[sizeof(T)];
-          Node* next;
+            Node* next;
+            Node* pre;
         }m_header;
 
         int m_length;
@@ -47,9 +50,10 @@ namespace Wanglib
             delete pn;
         }
     public:
-        LinkList()
+        DuaLinkList()
         {
             m_header.next = NULL;
+            m_header.pre = NULL;
             m_length = 0;
             m_step = 1;
             m_current = NULL;
@@ -60,7 +64,7 @@ namespace Wanglib
             return insert(m_length,e);
         }
 
-        bool insert(int i,const T& e)
+        bool insert(int i,const T& e)   //往下标为i的元素后插入一个元素；
         {
            bool ret = ((0 <= i) && (i<=m_length));
 
@@ -71,40 +75,64 @@ namespace Wanglib
                 if(node != NULL)
                 {
                     Node* current = position(i);
-
+                    Node* next = current->next;
 
                     node->value = e;
-                    node->next = current->next;
+
+                    node->next = next;
                     current->next = node;
 
+                    if(current != reinterpret_cast<Node*>(&m_header))
+                    {
+                        node->pre = current;
+                    }
+                    else
+                    {
+                        node->pre = NULL;
+                    }
+
+                    if(next != NULL)
+                    {
+                        next->pre = node;
+                    }
                     m_length++;
                 }
                 else
                 {
                     THROW_EXCEPTION(NoEnoughMemoryException,"No more memory  to create...");
                 }
-            }
+           }
 
             return ret;
         }
 
 
-         bool remove(int i)  //删除之后m_current往后移一个元素；
+         bool remove(int i)  // 删除下标为i的元素；
          {
              bool ret = ((0<=i)&&(i<m_length));
 
              if(ret)
              {
                 Node* current = position(i);
-                Node* todel = current->next;
-                 if(m_current == todel)
+                Node* temp = current;
+                Node* pre = current->pre;
+                Node* next = current->next;
+                 if(pre != NULL)
                  {
-                     m_current = todel->next;
+                    pre->next = current->next;
                  }
-                 current->next = todel->next;
 
+                 if(next != NULL)
+                 {
+                     next->pre = pre;
+                 }
+                 if(m_current == current)
+                 {
+                     m_current = current->next;
+                 }
                  m_length--;
-               destroy(todel);
+
+               destroy(temp);
              }
              else
              {
@@ -117,7 +145,7 @@ namespace Wanglib
         {
             bool ret = ((0<=i)&&(i<m_length));
             if(ret)
-            {           
+            {
                 position(i)->next->value = e;
             }
 
@@ -144,7 +172,7 @@ namespace Wanglib
         {
             bool ret = ((0<=i)&&(i<m_length));
             if(ret)
-            {              
+            {
                 e = position(i)->next->value;
             }
 
@@ -181,15 +209,9 @@ namespace Wanglib
         }
         void clear()
         {
-            while(m_header.next)
+            while(length() > 0)
             {
-               Node* todel = m_header.next;
-
-                m_header.next = todel->next;
-
-                m_length--;
-
-               destroy(todel);
+               remove(0);
             }
 
             //m_length = 0;
@@ -238,8 +260,18 @@ namespace Wanglib
 
             return (i == 1);
         }
+        virtual bool pre()
+        {
+            int i = 0;
+            if((i<m_length) && !end())
+            {
+                m_current = m_current->pre;
+                i++;
+            }
 
-        ~LinkList()
+            return (i == 1);
+        }
+        ~DuaLinkList()
         {
             clear();
         }
@@ -248,4 +280,4 @@ namespace Wanglib
 
 }
 
-#endif // LINKLIST_H
+#endif // DUALINKLIST_H
