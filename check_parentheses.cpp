@@ -67,12 +67,3 @@ bool scan(const char* code)
     }
     return ret && (stack.size() == 0);
 }
-
-int main()
-{
-
-    cout<<scan("<abcd>")<<endl;
-    return 0;
-}
-
-
