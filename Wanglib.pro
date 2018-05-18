@@ -5,8 +5,7 @@ CONFIG -= qt
 
 SOURCES += main.cpp \
     Exception.cpp \
-    object.cpp \
-    check_parentheses.cpp
+    object.cpp
 
 HEADERS += \
     SmartPointer.h \
@@ -29,4 +28,7 @@ HEADERS += \
     LinuxList.h \
     stack.h \
     staticstack.h \
-    linkstack.h
+    linkstack.h \
+    queue.h \
+    staticqueue.h \
+    linkqueue.h
