@@ -5,7 +5,8 @@ CONFIG -= qt
 
 SOURCES += main.cpp \
     Exception.cpp \
-    object.cpp
+    object.cpp \
+    mystring.cpp \
 
 HEADERS += \
     SmartPointer.h \
@@ -31,4 +32,5 @@ HEADERS += \
     linkstack.h \
     queue.h \
     staticqueue.h \
-    linkqueue.h
+    linkqueue.h \
+    mystring.h \
